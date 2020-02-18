@@ -1,0 +1,16 @@
+[{
+	"cmd":"print",
+	"target":"andever",
+	"security":"allowed"
+},
+{
+	"cmd":"conty",
+	"target":"evo",
+	"security" :"allowed"
+},
+{
+	"cmd":"shutdown",
+	"target":"evo",
+	"security":"Not allowed"	
+}
+]

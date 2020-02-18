@@ -1,0 +1,17 @@
+[
+{
+	"cmd":"delete",
+	"target":"andever",
+	"type": "REST-API"
+},
+{
+	"cmd":"copy",
+	"target":"evo",
+	"type": "SOAP"
+},
+{
+	"cmd":"switch",
+	"target":"evo",
+	"type": "ARINC429"
+}
+]
