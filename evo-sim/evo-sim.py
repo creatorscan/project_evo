@@ -3,6 +3,7 @@ from flask import request
 import json
 import requests
 import shutil
+import subprocess
 import os
 app =Flask(__name__)
 
@@ -21,21 +22,21 @@ def execute_command(recv_cmd):
 	#print (temp "and the type of temp is " type(temp))
 	for i in temp:
 		if i['cmd']== 'switch':
-			print ("The switch commad is received")
-			return True
+		    print("The switch command is received")
+		    return True
 		if i['cmd']== 'delete':
-			print ("The switch commad is received")
-			return True
-		if i['cmd']== 'copy':
-			print ("The print commad is received")
-			return True
+		    print("The delete command is received")
+		    src = '/home/natrinai/kaldi/egs/wsj/s5/test.browsing'
+                    subprocess.Popen(['rm %s' % (src)], shell=True)
+		    return True
 		if i['cmd'] == 'copy':
-		# code for copying files from one directory to usb
-			print ("Inside copy command")
-			src = '/home/natrinai/Downloads/'
-			dest = '/media/natrinai/SREE/'
-			if copytree(src,dest) == True:
-			   return True
+		    # code for copying files from one directory to usb
+		    print ("Inside copy command")
+		    src = '/home/natrinai/kaldi/egs/wsj/s5/test.video'
+		    dest = '/media/natrinai/SREE/'
+                    subprocess.Popen(['cp -r %s %s' % (src, dest)], shell=True)
+		    #if copytree(src,dest) == True:
+		    return True
 def copytree(src, dst, symlinks=False, ignore=None):
     for item in os.listdir(src):
         s = os.path.join(src, item)

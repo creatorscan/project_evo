@@ -1,0 +1,419 @@
+from flask import Flask
+import requests
+import sys
+import json
+from deepspeech_parser import *
+''' The functions to be done by command synthesizer is the following things:
+    1. Receive the recognized text and then parsing it 
+	2. Determine if the text is a meaningful command by comparing it to the list of commands in the config.json file or some other array of commands that are to be performed.
+	3. Determine the target application the command should be sent. 
+	4. Create the command.json file with the attributes like what is the command ?, where it should be executed ?, what type of handler(is it REST, SOAP or ARINC 429) to use for the target device.
+	5. Send the command.json through the REST api call.   
+'''
+# find the source for copying files
+def find_source(text,source):
+	if (text.find(source)== -1):
+		#print ("copy source found")
+		return 1	
+	else:
+		#print ("copy source found")
+		return -1	
+	#return source
+# find the destination to copy files to
+def find_destination(text, destination):
+	if (text.find(destination)== -1):
+		#print ("destination found")
+		return 1	
+	else:
+		#print ("destination Not found")
+		return -1
+	#return destination
+#text = "Print the log in Evo"
+# check if the recognized text has the keywords to create the command
+def checktext(text): 
+	print ("The Given text is :",text)
+	with open ('config.json' ,'r') as f:
+		config_dict = json.load(f)
+	for config in config_dict:
+		cmd = config['cmd']
+		#print (cmd)
+		calltype = config['type']
+		target = config['target']
+		#print ("The text found is:",text)
+		if find_command(text,cmd)==1 and find_target(text,target)==1:
+			print ("The Given text is a valid text , now creating command")
+			print ("The cmd word present is ",cmd,"and the target word present is", target)
+			send_command(cmd,target,calltype)
+		#else:
+			#print ("command and target not found not found")
+def find_target(text,target):
+	if (text.find(target)!= -1):
+		#print ("target found")
+		return  1
+	else:
+		#print ("No target found")
+		return -1
+# Finds if valid command is present in the text
+def find_command(text,cmd):
+	if (text.find(cmd)!= -1):
+		#print ("command found")
+		return  1
+	else:
+		#print ("command Not found")
+		return -1
+def send_command(command,target,calltype):
+	#print ("Inside the send_command function")
+	data =[{
+		'cmd' :command,
+		'target': target,
+		'type': calltype,
+		'security':"allowed"
+	}]
+	s = json.dumps(data)
+	res = requests.post('http://127.0.0.1:5000/', json=s).json()   
+	print(res['code'])
+
+while True:
+	#text=main()
+	filename= input("enter the filename:")
+	text = test_wavs(filename)
+
+	#print ("print in command synthesizer:",text)
+	if text != None:
+		with open('spoken.txt', 'a') as f:    
+       			f.write("\n"+text) 
+		checktext(text)
+#textip=input("Enter the command:")
+#checktext(textip)
+from flask import Flask
+import requests
+import json
+import time
+import subprocess
+
+''' The functions to be done by command synthesizer is the following things:
+    1. Receive the recognized text and then parsing it 
+	2. Determine if the text is a meaningful command by comparing it to the list of commands in the config.json file or some other array of commands that are to be performed.
+	3. Determine the target application the command should be sent. 
+	4. Create the command.json file with the attributes like what is the command ?, where it should be executed ?, what type of handler(is it REST, SOAP or ARINC 429) to use for the target device.
+	5. Send the command.json through the REST api call.   
+'''
+# find the source for copying files
+'''
+def find_source(text,source):
+	if (text.find(source)== -1):
+		return 1	
+	else:
+		return -1	
+	#return source
+# find the destination to copy files to
+def find_destination(text, destination):
+	if (text.find(destination)== -1):
+		return 1	
+	else:
+		return -1
+	#return destination'''
+# check if the recognized text has the keywords to create the command
+def checktext(text): 
+	with open ('config.json' ,'r') as f:
+		config_dict = json.load(f)
+	for config in config_dict:
+		cmd = str(config['cmd'])
+		calltype = str(config['type'])
+		target = str(config['target'])
+		if find_command(text,cmd)==1:
+			print ("The Given text is a valid text , now creating command")
+			print ("The cmd word present is ",cmd,"and the target word present is", target)
+			send_command(cmd,target,calltype)
+                        subprocess.Popen(["bash -x play_tts.sh %s" % (cmd)], shell=True)
+		#else:
+	        #	print ("command and target not found")
+def find_target(text,target):
+	if text == target:
+		print ("target found")
+		return  1
+	else:
+		print ("No target found")
+		return -1
+# Finds if valid command is present in the text
+def find_command(text,cmd):
+	if text == cmd:
+		print ("command found")
+		return  1
+	else:
+		print ("command Not found")
+		return -1
+def send_command(command,target,calltype):
+	print ("Inside the send_command function")
+        data =[{
+		'cmd' :str(command),
+		'target': str(target),
+		'type': str(calltype),
+		'security':str("allowed")
+	}]
+	s = json.dumps(data)
+	res = requests.post('http://127.0.0.1:5000/', json=s).json()   
+	print(res['code'])
+
+def live_audio():
+	'''	
+	print ('Inside main function')	
+	text=subprocess.check_output(['./nnet3_online.sh'])
+	#text = subprocess.call(['./nnet3_online.sh'])	
+	print ("The got text is",text)
+	print (type(text))
+	'''
+
+        #subprocess.call("./play_intro.sh", shell=True)
+	while True:
+		count=0
+                subprocess.call("./command_synthesizer.sh 1", shell=True)
+                text = open("asr_out.parsed", 'r').readlines()[0].split(' ')[0]
+		#text=live_recognizer()
+		timestr = time.strftime("%Y%m%d-%H%M%S")
+		textlog = 'textlog'+timestr
+		print ("print in command synthesizer:",text)
+		if text != None:
+			with open(textlog, 'w') as f:    
+       				f.write("\n"+text) 
+			checktext(text)
+                else:
+         		print ('/n No command found in recognized text, say again:\n')
+		count+=1
+		if count >3:
+			textip=input("Enter the Text as i/p:")
+			checktext(textip)
+def test_audio():	
+	while True:
+	#Insted of live audio from mic use the test audio file 
+		filename= input("enter the audiofile name:")
+                subprocess.call("./command_synthesizer.sh 2", shell=True)
+                text = open("asr_out.parsed", 'r').readlines()[0].split(' ')[0]
+		#text = test_wavs(filename)
+		timestr = time.strftime("%Y%m%d-%H%M%S")
+		textlog = 'textlog'+timestr
+		print ("print in command synthesizer:",text)
+		if text != None:
+			with open(textlog, 'w') as f:    
+       				f.write("\n"+text) 
+			checktext(text)
+
+print("1.Live audio mode\n 2.Testaudio mode")
+choice=str(input("enter the mode to run code(1 or 2):"))
+if choice == '1':
+	live_audio()
+if choice == '2':
+	test_audio()
+from deepspeech import Model
+import numpy as np
+import pyaudio
+from threading import Thread
+from array import array
+from scipy.io import wavfile as wav
+import wave, os, glob
+
+try:
+    from shhlex import quote
+except ImportError:
+    from pipes import quote
+
+
+
+def do_the_work(ds,inp,rate):
+    spoken = ds.stt(inp)
+    #print (spoken)
+    # Store the commands in a text file
+    return spoken
+    
+def live_recognizer():
+# load model
+  # Beam width used in the CTC decoder when building candidate transcriptions
+  BEAM_WIDTH = 500
+
+# The alpha hyperparameter of the CTC decoder. Language Model weight
+  LM_WEIGHT = 1.50
+
+# Valid word insertion weight. This is used to lessen the word insertion penalty
+# when the inserted word is part of the vocabulary
+  VALID_WORD_COUNT_WEIGHT = 2.10
+
+# These constants are tied to the shape of the graph used (changing them changes
+# the geometry of the first layer), so make sure you use the same constants that
+# were used during training
+  LM_ALPHA = 0.75
+  LM_BETA = 1.85
+# Number of MFCC features to use
+  N_FEATURES = 26
+
+# Size of the context window used for producing timesteps in the input vector
+  N_CONTEXT = 9
+
+  FORMAT = pyaudio.paInt16
+  CHANNELS = 1
+  RATE = 16000
+  CHUNK = 1024
+  RECORD_SECONDS = 5
+  ds = Model('models/output_graph.pbmm', BEAM_WIDTH)
+  ds.enableDecoderWithLM('models/lm.binary', 'models/trie', LM_ALPHA, LM_BETA)
+
+# initialize recording
+  audio = pyaudio.PyAudio()
+  stream = audio.open(format=FORMAT, channels=CHANNELS,
+                    rate=RATE,
+                    input=True,
+                    frames_per_buffer=CHUNK)
+
+
+  print("Give Command(Press Ctrl+c to stop ):")
+  while True:    
+# record audio
+    frames = [] 
+    for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+      data = stream.read(CHUNK)
+       #print (data)
+      data_chunk = array('h', data)
+       #print (data_chunk)
+      vol = max(data_chunk)
+      if (vol >= 500):
+          frames.append(data)
+	#recording finished
+    speech_input = np.frombuffer(b''.join(frames), np.int16)
+    text=do_the_work(ds,speech_input,RATE)
+    #print ("Inside the NLP engine:",text)
+    return text
+def test_wavs(filename):
+    ds = Model('models/output_graph.pbmm',500)
+    #zero = []
+    #path = '/home/raghu/Desktop/kiki/command_synthesiser/'
+    #for filename in glob.glob(os.path.join(path, '*.wav')):
+    fs,data = wav.read(filename)
+    processed_data = ds.stt(data)
+    return processed_data
+  #print (data)
+import requests
+import json
+#from arinc429 import *
+# Sending an rest request POST to the end device
+def send_rest(got_data):
+	s = json.dumps(got_data)
+	command = requests.post('http://127.0.0.1:8080/command', json=s).json()
+	print("command sent to evo")
+	print(command['code'])
+
+# Sending an SOAP request
+def send_soap(got_data):
+	s = json.dumps(got_data)
+	#print ("The dumped data is" s "and the type of dunped data is" type(s))
+	command = requests.post('http://127.0.0.1:8080/command', json=s).json()
+	print("command sent to evo")
+	print(command['code'])
+# sending an arinc429 word as a command
+def send_a429(got_data):
+	s = json.dumps(got_data)
+	#print ("The dumped data is" s "and the type of dunped data is" type(s))
+	command = requests.post('http://127.0.0.1:8080/command', json=s).json()
+	print("command sent to evo")
+	print(command['code'])
+from flask import Flask
+from flask import request
+import json
+from send_cmd import *
+app =Flask(__name__)
+
+@app.route('/',methods=['POST'])
+def get_command():
+	jsondata = request.get_json()
+	data = json.loads(jsondata)
+	if validate_command(data)== True: 
+		if find_type(data)== 'REST-API':
+			send_rest(data)
+			result={'code':"Rest command sent to end-device"}
+			return json.dumps(result)
+		elif find_type(data)=='SOAP':
+			send_soap(data)
+			result={'code':"SOAP command sent to end-device"}
+			return json.dumps(result)
+		else:
+			send_a429(data)
+			result={'code':"ARINC 429 label sent to end-device"}
+			return json.dumps(result)
+	else :
+		result={'code':"Command authentication failed"}
+		return json.dumps(result)
+def validate_command(received_json):
+	temp = received_json
+	print (temp)
+	#print (type(temp))
+	for i in temp:
+		got_cmd = i['cmd']
+		got_target = i['target']
+		got_sec = i['security']
+		with open ('security.json' ,'r') as f:
+			sec_dict = json.load(f)
+			for data in sec_dict:
+				cmd = data['cmd']
+				target = data['target']
+				security = data['security']
+				if got_sec == security:
+					print ("Command's security verified")
+					return True
+				else:
+					print ("Do not have the appropriate credentials to perform action")
+					return False 
+def find_type(received_json):
+	temp1=received_json
+	for i in temp1:
+		got_type =i['type']
+	return got_type
+if __name__=='__main__':
+	app.run(debug=True)
+from flask import Flask
+from flask import request
+import json
+import requests
+import shutil
+import os
+app =Flask(__name__)
+
+@app.route('/command',methods=['POST'])
+def command():
+	jsondata = request.get_json()
+	data = json.loads(jsondata)
+	if execute_command(data)== True:
+		result={'code':"Command executed in enddevice"}
+		return json.dumps(result)
+	else :
+		result={'code':"execution failed"}
+
+def execute_command(recv_cmd):
+	temp = recv_cmd
+	#print (temp "and the type of temp is " type(temp))
+	for i in temp:
+		if i['cmd']== 'switch':
+			print ("The switch commad is received")
+			return True
+		if i['cmd']== 'delete':
+			print ("The delete commad is received")
+			return True
+		if i['cmd']== 'copy':
+			print ("The print commad is received")
+			return True
+		if i['cmd'] == 'copy':
+		# code for copying files from one directory to usb
+			print ("Inside copy command")
+			src = '/home/bmk/Documents/Research/kaldi/egs/wsj/s5/get_key.py'
+			dest = '/home/bmk/Desktop'
+			if copytree(src,dest) == True:
+			   return True
+def copytree(src, dst, symlinks=False, ignore=None):
+    for item in os.listdir(src):
+        s = os.path.join(src, item)
+        d = os.path.join(dst, item)
+        if os.path.isdir(s):
+        	shutil.copytree(s, d, symlinks, ignore)
+	    #return True
+        else:
+        	shutil.copy2(s, d)
+        	return True
+if __name__=='__main__':
+	app.run(host ='127.0.0.1',port = 8080 ,debug=True)

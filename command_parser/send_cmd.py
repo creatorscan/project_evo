@@ -7,7 +7,6 @@ def send_rest(got_data):
 	command = requests.post('http://127.0.0.1:8080/command', json=s).json()
 	print("command sent to evo")
 	print(command['code'])
-
 # Sending an SOAP request
 def send_soap(got_data):
 	s = json.dumps(got_data)
