@@ -1,7 +1,7 @@
 #set +m
 
 VAR=$1
-expdir=~/Desktop/sree_proj/project/NLP/nnet3_libri_tcp
+expdir=~/project/NLP/nnet3_libri_tcp
 mdl=$expdir/exp/chain/tdnn_7b/final.mdl                                      
 graph=$expdir/exp/chain/tdnn_7b/graph_demov2
 online_dir=$expdir/exp/online
