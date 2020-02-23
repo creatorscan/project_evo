@@ -26,17 +26,20 @@ def execute_command(recv_cmd):
 		    return True
 		if i['cmd']== 'delete':
 		    print("The delete command is received")
-		    src = '/home/natrinai/kaldi/egs/wsj/s5/test.browsing'
-                    subprocess.Popen(['rm %s' % (src)], shell=True)
+                    if i['target'] == 'evo':
+    		        src = '/home/natrinai/kaldi/egs/wsj/s5/test.browsing'
+                        subprocess.Popen(['rm %s' % (src)], shell=True)
 		    return True
 		if i['cmd'] == 'copy':
 		    # code for copying files from one directory to usb
 		    print ("Inside copy command")
-		    src = '/home/natrinai/kaldi/egs/wsj/s5/test.video'
-		    dest = '/media/natrinai/SREE/'
-                    subprocess.Popen(['cp -r %s %s' % (src, dest)], shell=True)
-		    #if copytree(src,dest) == True:
+                    if i['target'] == 'evo':
+		        src = '/home/natrinai/kaldi/egs/wsj/s5/test.video'
+		        dest = '/media/natrinai/SREE/'
+                        subprocess.Popen(['cp -r %s %s' % (src, dest)], shell=True)
+		        #if copytree(src,dest) == True:
 		    return True
+
 def copytree(src, dst, symlinks=False, ignore=None):
     for item in os.listdir(src):
         s = os.path.join(src, item)

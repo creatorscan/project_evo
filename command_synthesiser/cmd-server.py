@@ -38,11 +38,9 @@ def checktext(text):
 			print ("The Given text is a valid text , now creating command")
 			print ("The cmd word present is ",cmd,"and the target word present is", target)
 			send_command(cmd,target,calltype)
-                        subprocess.Popen(["bash -x play_tts.sh %s" % (cmd)], shell=True)
-		#else:
-	        #	print ("command and target not found")
+                        subprocess.Popen(["bash play_tts.sh %s" % (cmd)], shell=True)
 def find_target(text,target):
-	if text == target:
+	if target in text:
 		print ("target found")
 		return  1
 	else:
@@ -50,7 +48,7 @@ def find_target(text,target):
 		return -1
 # Finds if valid command is present in the text
 def find_command(text,cmd):
-	if text == cmd:
+	if cmd in text:
 		print ("command found")
 		return  1
 	else:
@@ -80,8 +78,10 @@ def live_audio():
         #subprocess.call("./play_intro.sh", shell=True)
 	while True:
 		count=0
-                subprocess.call("./command_synthesizer.sh 1", shell=True)
-                text = open("asr_out.parsed", 'r').readlines()[0].split(' ')[0]
+                #subprocess.call("./command_synthesizer.sh 1", shell=True)
+                text = open("asr_out.parsed", 'r').readlines()[0].split('\n')[0]
+                if not text:
+                    break
 		#text=live_recognizer()
 		timestr = time.strftime("%Y%m%d-%H%M%S")
 		textlog = 'textlog'+timestr
@@ -92,6 +92,7 @@ def live_audio():
 			checktext(text)
                 else:
          		print ('/n No command found in recognized text, say again:\n')
+                        subprocess.Popen(["bash play_tts.sh"], shell=True)
 		count+=1
 		if count >3:
 			textip=input("Enter the Text as i/p:")

@@ -26,7 +26,7 @@ def get_command():
 		return json.dumps(result)
 def validate_command(received_json):
 	temp = received_json
-	print (temp)
+	#print (temp)
 	#print (type(temp))
 	for i in temp:
 		got_cmd = i['cmd']
