@@ -75,10 +75,10 @@ def live_audio():
 	print (type(text))
 	'''
 
-        #subprocess.call("./play_intro.sh", shell=True)
+        subprocess.call("bash play_intro.sh", shell=True)
 	while True:
 		count=0
-                #subprocess.call("./command_synthesizer.sh 1", shell=True)
+                subprocess.call("bash command_synthesizer.sh 1", shell=True)
                 text = open("asr_out.parsed", 'r').readlines()[0].split('\n')[0]
                 if not text:
                     break
@@ -101,7 +101,7 @@ def test_audio():
 	while True:
 	#Insted of live audio from mic use the test audio file 
 		filename= input("enter the audiofile name:")
-                subprocess.call("./command_synthesizer.sh 2", shell=True)
+                subprocess.call("bash command_synthesizer.sh 2", shell=True)
                 text = open("asr_out.parsed", 'r').readlines()[0].split(' ')[0]
 		#text = test_wavs(filename)
 		timestr = time.strftime("%Y%m%d-%H%M%S")

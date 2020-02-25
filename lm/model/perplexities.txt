@@ -1,0 +1,5 @@
+data/local/lm_demo/model//4gram*
+data/local/lm_demo/model//3gram.gt012.gz  file  data/local/lm_demo/model//dev.txt:  240000  sentences,  240000  words,  0  OOVs  0  zeroprobs,  logprob=  -237145  ppl=  3.11927  ppl1=  9.72983
+data/local/lm_demo/model//3gram.gt011.gz  file  data/local/lm_demo/model//dev.txt:  240000  sentences,  240000  words,  0  OOVs  0  zeroprobs,  logprob=  -237145  ppl=  3.11927  ppl1=  9.72983
+data/local/lm_demo/model//3gram.gt023.gz  file  data/local/lm_demo/model//dev.txt:  240000  sentences,  240000  words,  0  OOVs  0  zeroprobs,  logprob=  -237152  ppl=  3.11937  ppl1=  9.73045
+data/local/lm_demo/model//3gram.gt022.gz  file  data/local/lm_demo/model//dev.txt:  240000  sentences,  240000  words,  0  OOVs  0  zeroprobs,  logprob=  -237152  ppl=  3.11937  ppl1=  9.73045

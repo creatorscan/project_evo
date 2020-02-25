@@ -1,7 +1,10 @@
+#!/bin/bash
+
+. ./path.sh || exit 1;
 set +m
 
 VAR=$1
-expdir=~/Desktop/sree_proj/project/NLP/nnet3_libri_tcp
+expdir=$PROJECT_DIR/NLP/nnet4_libri_tcp
 mdl=$expdir/exp/chain/tdnn_7b/final.mdl                                      
 graph=$expdir/exp/chain/tdnn_7b/graph_demov2
 online_dir=$expdir/exp/online
@@ -9,7 +12,7 @@ audio=$expdir/input.wav
                                                                                 
 
 # to decode the recording utterance                                             
-($expdir/../online2-tcp-nnet3-decode-faster --config=$online_dir/conf/online.conf \
+(online2-tcp-nnet3-decode-faster --config=$online_dir/conf/online.conf \
 	--print-args=false \
 	--samp-freq=16000 --beam=15.0 --lattice-beam=6.0 --acoustic-scale=1.0 \
 	--frames-per-chunk=20 \
