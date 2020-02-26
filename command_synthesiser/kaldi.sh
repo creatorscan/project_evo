@@ -5,7 +5,7 @@
 file=asr_out
 VAR=$1
 
-echo "Welcome to Virtual assistant demo. You can ask me to copy video, delete video, copy browsing, delete browsing and copy folder. Please SPEAK NOW within 5 seconds, I am Listening"
+echo "Please SPEAK NOW, I am Listening" | festival --tts
 bash nnet3_online.sh "$VAR" | grep "" &> $file
 
 sed -e "s||\n|g" $file | sort -u > ${file}.toparse
