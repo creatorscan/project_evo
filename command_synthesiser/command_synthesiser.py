@@ -60,7 +60,7 @@ def find_command(text,cmd):
 
 def send_command(command,target,calltype):
 	print ("Inside the send_command function")
-        data =[{
+	data =[{
 		'cmd' :str(command),
 		'target': str(target),
 		'type': str(calltype),
