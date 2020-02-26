@@ -67,7 +67,11 @@ def send_command(command,target,calltype):
 		'security':str("allowed")
 	}]
 	s = json.dumps(data)
-	res = requests.post('http://127.0.0.1:5000/', json=s).json()   
+        try:
+        	res = requests.post('http://127.0.0.1:5000/', json=s).json()
+        except (ConnectionError,NameError) as e:
+                print("port 5000 is not open")
+
 	print(res['code'])
 
 def live_audio():
@@ -88,7 +92,7 @@ def live_audio():
 		except Exception as e:
 			count+=1
 			if count >3:
-				textip=input("Enter the Text as i/p:")
+				textip=input("Enter the Text as i/p within quotes\":")
 				text_ip_log = 'logs/text_ip_log'	
 				checktext(textip)
 				log_generator(text_ip_log,textip)
