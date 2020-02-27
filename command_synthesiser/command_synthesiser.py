@@ -75,42 +75,42 @@ def send_command(command,target,calltype):
 	print(res['code'])
 
 def live_audio():
-    	count=0
-    	subprocess.call("bash play_intro.sh", shell=True)
-	while True:
-		try:
-			print ("Press Ctrl+C to stop listening")
-			subprocess.call("./kaldi.sh 1", shell=True)	
-			live_audio_log = 'logs/live_audio_log'
-			text = open("asr_out.parsed", 'r').readlines()[0].split('\n')[0]
-			print ("print in command synthesizer:",text)
-			checktext(text)
-                        subprocess.call("sleep 2", shell=True)
-			log_generator(live_audio_log,text)
-		except Exception as e:
-			count+=1
-			if count >3:
-				textip=input("Enter the Text as i/p within quotes\":")
-				text_ip_log = 'logs/text_ip_log'	
-				checktext(textip)
-				log_generator(text_ip_log,textip)
-			print("\nNo command from the NLP engine, exception occured",e)
-			print(" \nAfter 3 attempts you will be prompted to enter text as command ")		
+    count=0
+    subprocess.call("bash play_intro.sh", shell=True)
+    while True:
+        try:
+            print ("Press Ctrl+C to stop listening")
+            subprocess.call("./kaldi.sh 1", shell=True)	
+            live_audio_log = 'logs/live_audio_log'
+            text = open("asr_out.parsed", 'r').readlines()[0].split('\n')[0]
+            print ("print in command synthesizer:",text)
+            checktext(text)
+            subprocess.call("sleep 2", shell=True)
+            log_generator(live_audio_log,text)
+        except Exception as e:
+            count+=1
+            if count >3:
+                textip=input("Enter the Text as i/p within quotes\":")
+                text_ip_log = 'logs/text_ip_log'	
+                checktext(textip)
+                log_generator(text_ip_log,textip)
+            print("\nNo command from the NLP engine, exception occured",e)
+            print(" \nAfter 3 attempts you will be prompted to enter text as command ")		
 
-def test_audio():	
-	while True:
-            try:
-			#Insted of live audio from mic use the test audio file 
-			print ("Press Ctrl+C to stop execution")
-			filename= input("enter the audiofile name:")
-			subprocess.call("./kaldi.sh 2", shell=True)
-			record_audio_log = 'logs/recorded_audio_log'
-			audio_text = open("asr_out.parsed", 'r').readlines()[0].split('\n')[0]
-			print ("print in command synthesizer:",audio_text)			 
-			checktext(audio_text)
-			log_generator(record_audio_log,audio_text)
-            except Exception as e:
-			print ("Audio file decoding interupted due to the following exception:",e)
+def test_audio():
+    while True:
+        try:
+            #Insted of live audio from mic use the test audio file
+            print("Press Ctrl+C to stop execution")
+            filename= input("enter the audiofile name:")
+            subprocess.call("./kaldi.sh 2", shell=True)
+            record_audio_log = 'logs/recorded_audio_log'
+            audio_text = open("asr_out.parsed", 'r').readlines()[0].split('\n')[0]
+            print ("print in command synthesizer:",audio_text)			 
+            checktext(audio_text)
+            log_generator(record_audio_log,audio_text)
+        except Exception as e:
+            print ("Audio file decoding interupted due to the following exception:",e)
 
 if __name__ == "__main__":
 	try:
