@@ -76,6 +76,7 @@ def send_command(command,target,calltype):
 
 def live_audio():
     count=0
+    subprocess.call(". ./path.sh", shell=True)
     subprocess.call("bash play_intro.sh", shell=True)
     while True:
         try:

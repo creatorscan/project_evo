@@ -21,6 +21,3 @@ sed -i '/^ \+$/d' ${file}.toparse
 sed -i ':a;N;$!ba;s/\n/ /g' ${file}.toparse
 sed -i "s| \+| |g" ${file}.toparse
 awk '{print tolower($0)}' ${file}.toparse > ${file}.parsed
-
-
-
