@@ -95,8 +95,8 @@ def live_audio():
                 text_ip_log = 'logs/text_ip_log'	
                 checktext(textip)
                 log_generator(text_ip_log,textip)
-            print("\nNo command from the NLP engine, exception occured",e)
-            print(" \nAfter 3 attempts you will be prompted to enter text as command ")		
+            print('\n' + " No command from the NLP engine, exception occured :: " + e)
+            print('\n' + " After 3 attempts you will be prompted to enter text as command ")		
 
 def test_audio():
     while True:
@@ -115,8 +115,8 @@ def test_audio():
 
 if __name__ == "__main__":
 	try:
-		print("1.Live audio mode\n 2.Testaudio mode")
-		choice=str(input("enter the mode to run code(1 or 2):"))
+		print("1.Live audio mode" + "\n" + "2.Testaudio mode")
+		choice=str(input("enter the mode to run code (1 or 2):"))
 		if choice == '1':
 			live_audio()
 		if choice == '2':
