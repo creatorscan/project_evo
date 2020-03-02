@@ -1,8 +1,49 @@
-from flask import Flask
 from flask import request
 import json
 from send_cmd import *
-app =Flask(__name__)
+import shelve
+
+from flask import Flask, g
+from flask_restful import Resource, Api, reqparse
+
+app = Flask(__name__)
+
+api = Api(app)
+
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = shelve.open("devices.db")
+    return db
+
+@app.teardown_appcontext
+def teardown_db(exception):
+    db = getattr(g, '_database', None)
+    if db is not None:
+        db.close()
+
+
+#@app.route('/')
+class DeviceList(Resource):
+    def get(self):
+        shelf = get_db()
+        keys = list(shelf.keys())
+
+        devices = []
+        
+        for key in keys:
+            devices.append(shelf[key])
+
+        return {'message': 'Success', 'data': devices}, 200
+
+    def post(self):
+	jsondata = request.get_json()
+	data = json.loads(jsondata)
+        shelf = get_db()
+        key = str(data['cmd'])
+        shelf['cmd'] = key
+
+        return {'code': 'Device registered'}, 201
 
 @app.route('/',methods=['POST'])
 def get_command():
@@ -49,5 +90,8 @@ def find_type(received_json):
 	for i in temp1:
 		got_type =i['type']
 	return got_type
+
+#api.add_resource(DeviceList, '/devices')
+
 if __name__=='__main__':
 	app.run(debug=True)

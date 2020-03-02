@@ -39,7 +39,7 @@ def checktext(text):
 			print ("The Given text is a valid text , now creating command")
 			print ("The cmd word present is ",cmd,"and the target word present is", target)
 			send_command(cmd,target,calltype)
-			subprocess.Popen(["bash play_tts.sh %s" % (cmd)], shell=True)
+			#subprocess.Popen(["bash play_tts.sh %s" % (cmd)], shell=True)
 
 def find_target(text,target):
 	if target in text:
@@ -95,7 +95,7 @@ def live_audio():
                 text_ip_log = 'logs/text_ip_log'	
                 checktext(textip)
                 log_generator(text_ip_log,textip)
-            print('\n' + " No command from the NLP engine, exception occured :: " + e)
+            print('\n' + " No command from the NLP engine, exception occured :: ", e)
             print('\n' + " After 3 attempts you will be prompted to enter text as command ")		
 
 def test_audio():
@@ -111,7 +111,7 @@ def test_audio():
             checktext(audio_text)
             log_generator(record_audio_log,audio_text)
         except Exception as e:
-            print ("Audio file decoding interupted due to the following exception:",e)
+            print ("Audio file decoding interupted due to the following exception:: ",e)
 
 if __name__ == "__main__":
 	try:

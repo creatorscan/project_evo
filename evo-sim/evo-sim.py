@@ -50,6 +50,7 @@ def execute_command(recv_cmd):
                                 if size_src < size_dest:
                                     subprocess.Popen(['cp -r %s %s' % (src, dest)], shell=True)
                                     print("Copy completed")
+                                    subprocess.Popen(['echo %s | festival --tts' % (" copy of log to you yes bee completed")], shell=True)
                                 else:
                                     print("Not sufficient memory space")
                             else:
@@ -57,6 +58,7 @@ def execute_command(recv_cmd):
                                 break
                         else:
                             print(src, " log path does not exist, try another path")
+                            subprocess.Popen(['echo %s | festival --tts' % (" log path does not exist")], shell=True)
 		        #if copytree(src,dest) == True:
 		    return True
 
