@@ -5,6 +5,8 @@ import requests
 import shutil
 import subprocess
 import os
+from os import path
+
 app =Flask(__name__)
 
 @app.route('/command',methods=['POST'])
@@ -34,9 +36,27 @@ def execute_command(recv_cmd):
 		    # code for copying files from one directory to usb
 		    print ("Inside copy command")
                     if i['target'] == 'evo':
-		        src = '/home/natrinai/kaldi/egs/wsj/s5/test.video'
+		        src = '/home/natrinai/kaldi/egs/wsj/s5/test.log'
 		        dest = '/media/natrinai/SREE/'
-                        subprocess.Popen(['cp -r %s %s' % (src, dest)], shell=True)
+                        # sanity checks
+                        if path.exists(src):
+                            if path.isfile(src):
+                                print(src, " log is a file")
+                            elif path.isdir(src):
+                                print(src, " log is a directory")
+                            if path.exists(dest):
+                                size_src = int(path.getsize(src))
+                                size_dest = int(path.getsize(dest))
+                                if size_src < size_dest:
+                                    subprocess.Popen(['cp -r %s %s' % (src, dest)], shell=True)
+                                    print("Copy completed")
+                                else:
+                                    print("Not sufficient memory space")
+                            else:
+                                print("No USB connected, Please connect the USB and perform copy")
+                                break
+                        else:
+                            print(src, " log path does not exist, try another path")
 		        #if copytree(src,dest) == True:
 		    return True
 
